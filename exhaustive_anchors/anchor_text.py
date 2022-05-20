@@ -1,5 +1,5 @@
 """
-This is the exhaustive implementation of Anchors for text data
+This is the exhaustive-empirical implementation of Anchors for text data
 """
 
 import numpy as np
