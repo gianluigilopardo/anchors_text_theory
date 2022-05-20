@@ -57,7 +57,7 @@ class AnchorText:
         :return: shortest anchor with maximal precision
         """
         threshold = self.threshold
-        words = re.sub(r'[^\w]', ' ', text.lower()).split()
+        words = re.sub(r'[^a-zA-Z]', ' ', text.lower()).split()
         prediction = self.classifier_fn([text])[0]
         candidates = chain.from_iterable(combinations(words, r) for r in range(len(words) + 1))
         precision_best = 0
