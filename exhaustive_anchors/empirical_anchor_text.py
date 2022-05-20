@@ -4,11 +4,12 @@ This is the exhaustive-empirical implementation of Anchors for text data
 
 import numpy as np
 from itertools import chain, combinations
+import re
 
 
 class AnchorText:
 
-    def __init__(self, classifier_fn, num_samples=1000, threshold=0.95, mask='UNK'):
+    def __init__(self, classifier_fn, num_samples=100, threshold=0.95, mask='UNK'):
         """
         :param classifier_fn: classifier prediction function, taking a list of documents as input
         :param num_samples: size of the neighborhood to learn the anchor
@@ -56,7 +57,7 @@ class AnchorText:
         :return: shortest anchor with maximal precision
         """
         threshold = self.threshold
-        words = text.split()
+        words = re.sub(r'[^\w]', ' ', text.lower()).split()
         prediction = self.classifier_fn([text])[0]
         candidates = chain.from_iterable(combinations(words, r) for r in range(len(words) + 1))
         precision_best = 0
