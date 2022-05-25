@@ -23,11 +23,11 @@ df, X, y = data.df, data.X, data.y
 N_runs = 100
 
 # TF-IDF transformation
-vectorizer = TfidfVectorizer()
+vectorizer = TfidfVectorizer(norm=None)
 vectors = vectorizer.fit_transform(X)
 
 # MODELS
-# model returning 1 if 'not bad' or 'good' is present
+# model returning 1 if 'not bad' or 'awesome' is present
 model = models.DTree(vectorizer, [['awesome'], ['not', 'bad']])
 
 # classes of the model

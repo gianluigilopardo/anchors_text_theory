@@ -25,7 +25,7 @@ df, X, y = data.df, data.X, data.y
 N_runs = 100
 
 # TF-IDF transformation
-vectorizer = TfidfVectorizer()
+vectorizer = TfidfVectorizer(norm=None)
 vectors = vectorizer.fit_transform(X)
 
 # MODELS
@@ -42,6 +42,10 @@ anchor_explainer = anchor_text.AnchorText(nlp, class_names, use_unk_distribution
 # Example to explain
 example = "Food is very very very very good!"
 print(example)
+
+multiplicities = count_multiplicities(example)
+print(multiplicities)
+
 anchors_res = []
 for i in range(N_runs):
     print('\n {} / {}'.format((i + 1), N_runs))
@@ -53,7 +57,6 @@ for i in range(N_runs):
 
 print(anchors_res)
 
-multiplicities = count_multiplicities(example)
 info = {'Description': 'Classifier returning 1 if \'good\' and \'very\' are present\n'
                        'Limit case: the multiplicity of \'very\' in the example is equal to the breakpoint value B=4',
         'Example': example, 'N_runs': N_runs,
