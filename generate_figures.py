@@ -29,7 +29,9 @@ for model in models['linear_models']:
     print('Saving {}...'.format(model))
     info = pickle.load(open(os.path.join('results', 'linear_models', str(model) + '.p'), 'rb'))
     n_words = 3
-    words = list(info['Coefficients'].keys())[:n_words]
+    words = list(info['mv'].keys())[:n_words]
+    # use the following instead if re-running the experiments
+    # words = list(info['coefs'].keys())[:n_words]
     a = [[] for i in range(n_words)]
     anchors_res = info['Anchors']
     for i, row in anchors_res.iterrows():
