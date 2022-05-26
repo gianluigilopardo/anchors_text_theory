@@ -58,7 +58,7 @@ print(accuracy)
 
 example = X[1]  # pick any document with positive prediction
 print(example)
-print(c.predict_proba([example]))
+print(c.predict([example]))
 
 N_runs = 100
 
