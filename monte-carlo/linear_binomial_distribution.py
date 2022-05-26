@@ -29,7 +29,7 @@ anchors = np.array([8, 5, 6, 5, 5, 2, 1, 1, 1, 1])
 # anchors
 
 
-# \beta_jv_j
+# \lambda_jv_j
 coefs = 5 * np.random.normal(0, 1, (dim,))
 
 # for the clt approximation

@@ -35,10 +35,6 @@ DATASET = 'yelp'
 data = Dataset(DATASET, path)
 df, X, y = data.df, data.X, data.y
 
-example = X[1]
-X.remove(example)
-y.remove(y[1])
-
 X_train, X_test, y_train, y_test = train_test_split(X, y)
 
 # TF-IDF Vectorizer
@@ -47,6 +43,7 @@ train_vectors = vectorizer.fit_transform(X_train)
 test_vectors = vectorizer.transform(X_test)
 
 # CLASSIFIER
+# any linear model
 model = Perceptron()
 model.fit(train_vectors, y_train)
 
@@ -59,10 +56,11 @@ print(cm)
 accuracy = accuracy_score(y_test, y_pred)
 print(accuracy)
 
+example = X[1]  # pick any document with positive prediction
 print(example)
-print(c.predict([example]))
+print(c.predict_proba([example]))
 
-N_runs = 10
+N_runs = 100
 
 anchors_data = pd.DataFrame(columns=['Anchor', 'Run', 'Shift'])
 runs, shifts_, anchors = [], [], []
@@ -74,7 +72,7 @@ class_names = ["Dislike", "Like"]
 nlp = spacy.load('en_core_web_sm')  # anchors need it
 anchor_explainer = anchor_text.AnchorText(nlp, class_names, use_unk_distribution=True)
 
-shifts = np.linspace(600, 2200, 81)
+shifts = np.linspace(600, 2200, 81)  # the shift to apply is example-dependent
 intercept = model.intercept_[0]
 
 p = vectorizer.build_preprocessor()
@@ -83,12 +81,14 @@ t = vectorizer.build_tokenizer()
 words = t(p_doc)
 
 multiplicities = count_multiplicities(example, vectorizer)
-coefficients = get_coefficients(model, example, vectorizer)
-idf = get_idf(example, vectorizer)
-mv = {w: coefficients[w]*idf[w] for w in words}
-mv = dict(sorted(mv.items(), key=lambda item: item[1], reverse=True))
+coefficients = get_coefficients(model, example, vectorizer)  # \lambda_j
+idf = get_idf(example, vectorizer)  # \v_j
 
-print(mv)
+# \lambda_jv_j
+coefs = {w: coefficients[w]*idf[w] for w in words}
+coefs = dict(sorted(coefs.items(), key=lambda item: item[1], reverse=True))
+
+print(coefs)
 for shift in shifts:
     model.intercept_ = [intercept - shift]
     print(model.intercept_)
@@ -114,7 +114,7 @@ anchors_data.Shift = shifts_
 info = {'Description': 'Anchors explanation for a perceptron model',
         'Dataset': DATASET, 'Accuracy': accuracy, 'Confusion Matrix': cm,
         'Example': example, 'N_runs': N_runs,
-        'Coefficients': coefficients, 'Multiplicities': multiplicities, 'IDF': idf, 'mv': mv,
+        'Coefficients': coefficients, 'Multiplicities': multiplicities, 'IDF': idf, 'coefs': coefs,
         'Intercept': intercept, 'Shifts': shifts,
         'Anchors': anchors_data,
         }

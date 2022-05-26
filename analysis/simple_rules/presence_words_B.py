@@ -40,6 +40,7 @@ nlp = spacy.load('en_core_web_sm')  # anchors need it
 anchor_explainer = anchor_text.AnchorText(nlp, class_names, use_unk_distribution=True)
 
 # Example to explain
+# pick any document with positive prediction
 example = "Food is very very very very good!"
 print(example)
 anchors_res = []
