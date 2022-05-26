@@ -25,9 +25,8 @@ dim = 10
 
 # multiplicities of the words
 multiplicities = np.array([10, 10, 8, 7, 6, 2, 2, 2, 2, 1])
-anchors = np.array([8, 5, 6, 5, 5, 2, 1, 1, 1, 1])
 # anchors
-
+anchors = np.array([8, 5, 6, 5, 5, 2, 1, 1, 1, 1])
 
 # \lambda_jv_j
 coefs = 5 * np.random.normal(0, 1, (dim,))
@@ -59,7 +58,7 @@ for i_grid in range(n_grid):
 sns.lineplot(t_grid, est_proba, color='b', label='Estimated')
 sns.lineplot(t_grid, norm.cdf((t_grid - mean) / std), color='r', label='Standard Normal')
 plt.legend(loc='lower right')
+plt.title(r'$d={}$, $b={}$, $|A|={}$'.format(dim, np.sum(multiplicities), np.sum(anchors)))
 
-
-fig_name = "berry-esseen.pdf"
+fig_name = "berry-esseen_{}_{}_{}.pdf".format(dim, np.sum(multiplicities), np.sum(anchors))
 plt.savefig(fig_name, format='pdf', bbox_inches='tight', pad_inches=0)
