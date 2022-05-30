@@ -1,4 +1,5 @@
 # A Sea of Words: An In-Depth Analysis of Anchors for Text Data
+Code for the paper [A Sea of Words: An In-Depth Analysis of Anchors for Text Data](https://arxiv.org/pdf/2205.13789.pdf).
 
 ## Requirements
 Some non-standard packages need to be installed:
