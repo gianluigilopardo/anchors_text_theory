@@ -62,3 +62,21 @@ def get_idf(doc, vectorizer):
     for i in idx:
         idf[global_dic[i]] = idf_[i]
     return dict(sorted(idf.items(), key=lambda item: item[1], reverse=True))
+
+
+# rank words of example by lambda_j v_j
+def rank_by_coefs(model, example, vectorizer):
+    word_coefs = []
+    p = vectorizer.build_preprocessor()
+    p_doc = p(example)
+    t = vectorizer.build_tokenizer()
+    words = t(p_doc)
+    multiplicities = count_multiplicities(example, vectorizer)  # \m_j
+    coefficients = get_coefficients(model, example, vectorizer)  # \lambda_j
+    idf = get_idf(example, vectorizer)  # \v_j
+    coefs = {w: coefficients[w] * idf[w] for w in words}  # \lambda_jv_j
+    coefs = dict(sorted(coefs.items(), key=lambda item: item[1], reverse=True))
+    for word in coefs.keys():
+        for i in range(multiplicities[word]):
+            word_coefs.append(word)
+    return word_coefs
