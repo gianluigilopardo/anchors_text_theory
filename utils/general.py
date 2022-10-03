@@ -46,6 +46,19 @@ def get_coefficients(model, doc, vectorizer):
     return dict(sorted(coefs.items(), key=lambda item: item[1], reverse=True))
 
 
+# returns linear coefficient for each word
+def get_coefficients_nn(gradient, doc, vectorizer):
+    dic = vectorizer.get_feature_names()
+    words = get_words(vectorizer, doc)
+    coefs = {}
+    for word in words:
+        if word in dic:
+            coefs[word] = gradient[dic.index(word)]
+        else:
+            coefs[word] = 0
+    return dict(sorted(coefs.items(), key=lambda item: item[1], reverse=True))
+
+
 # returns inverse document frequency term for each word
 def get_idf(doc, vectorizer):
     words = get_words(vectorizer, doc)
@@ -80,3 +93,22 @@ def rank_by_coefs(model, example, vectorizer):
         for i in range(multiplicities[word]):
             word_coefs.append(word)
     return word_coefs
+
+
+def rank_by_coefs_nn(gradient, example, vectorizer):
+    word_coefs = []
+    p = vectorizer.build_preprocessor()
+    p_doc = p(example)
+    t = vectorizer.build_tokenizer()
+    words = t(p_doc)
+    multiplicities = count_multiplicities(example, vectorizer)  # \m_j
+    coefficients = get_coefficients_nn(gradient, example, vectorizer)
+    idf = get_idf(example, vectorizer)  # \v_j
+    coefs = {w: coefficients[w] * idf[w] for w in words}  # \lambda_jv_j
+    coefs = dict(sorted(coefs.items(), key=lambda item: item[1], reverse=False))
+    for word in coefs.keys():
+        for i in range(multiplicities[word]):
+            word_coefs.append(word)
+    return word_coefs
+
+
