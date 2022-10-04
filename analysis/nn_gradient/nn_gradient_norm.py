@@ -37,19 +37,19 @@ from utils.general import rank_by_coefs_nn
 # output
 import pickle
 
-np.random.seed(2)
+np.random.seed(10)
 
 # DATA
 path = os.getcwd().replace('nn_gradient', '').replace('analysis', 'dataset')
-DATASET = 'imdb'
+DATASET = 'yelp'
 data = Dataset(DATASET, path)
 df, X, y = data.df, data.X, data.y
 
 X_train, X_test, y_train, y_test = train_test_split(X, y)
 
-# TF-IDF Vectorizer
-vectorizer = TfidfVectorizer(norm=None)
-vect = 'tf_idf'
+# norm TF-IDF Vectorizer
+vectorizer = TfidfVectorizer()
+vect = 'norm_tf_idf'
 
 train_vectors = vectorizer.fit_transform(X_train)  # .toarray()
 test_vectors = vectorizer.transform(X_test)  # .toarray()
@@ -85,7 +85,7 @@ if TRAIN:
     loss.backward()
 
     # Optimizers require the parameters to optimize and a learning rate
-    optimizer = optim.Adam(model.parameters(), lr=0.01, weight_decay=0.01)
+    optimizer = optim.Adam(model.parameters(), lr=0.01, weight_decay=0.001)
 
     # train
     train_losses = []
