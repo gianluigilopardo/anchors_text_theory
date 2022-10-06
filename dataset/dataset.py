@@ -25,11 +25,12 @@ class Dataset:
 
         elif name == 'imdb':
             dataset = 'imdb.csv'
-            self.df = pd.read_csv(os.path.join(path, dataset), sep=',')
+            self.df = pd.read_csv(os.path.join(path, dataset), sep=',', nrows=10000)
             self.X = [self.preprocess(x) for x in list(self.df["review"])]
             self.y = self.df.sentiment.copy()
             self.y = self.y.replace('positive', 1)
             self.y = self.y.replace('negative', 0)
+            self.y = list(self.y)
 
     def preprocess(self, x):
         return re.sub('[^a-zA-Z\d\s]', '', x).lower()

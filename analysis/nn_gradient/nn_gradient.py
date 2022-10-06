@@ -51,8 +51,8 @@ X_train, X_test, y_train, y_test = train_test_split(X, y)
 vectorizer = TfidfVectorizer(norm=None)
 vect = 'tf_idf'
 
-train_vectors = vectorizer.fit_transform(X_train)  # .toarray()
-test_vectors = vectorizer.transform(X_test)  # .toarray()
+train_vectors = vectorizer.fit_transform(X_train)
+test_vectors = vectorizer.transform(X_test)
 
 # convert to pytorch tensor
 x_train = torch.tensor(scipy.sparse.csr_matrix.todense(train_vectors)).float()
@@ -60,7 +60,7 @@ x_test = torch.tensor(scipy.sparse.csr_matrix.todense(test_vectors)).float()
 y_train = torch.tensor(y_train)
 y_test = torch.tensor(y_test)
 
-TRAIN = True
+TRAIN = False
 PATH = os.path.join(os.getcwd(), vect, f'net_{DATASET}')
 
 if TRAIN:
@@ -93,7 +93,7 @@ if TRAIN:
     test_losses = []
     test_accuracies = []
 
-    epochs = 100
+    epochs = 10000
     for e in range(epochs):
         optimizer.zero_grad()
         output = model.forward(x_train)
@@ -141,6 +141,7 @@ else:
 
                           nn.Linear(64, 2),
                           nn.Softmax(dim=1))
+    criterion = nn.NLLLoss()
     model.load_state_dict(torch.load(PATH))
     model.eval()
 
@@ -171,8 +172,8 @@ anchor_explainer = anchor_text.AnchorText(nlp, class_names, use_unk_distribution
 N_runs = 10
 
 # We explain positive predictions
-corpus = np.asarray(X_test)[clf(X_test) == 1]
-corpus_vectors = vectorizer.transform(corpus)  # .toarray()
+corpus = np.asarray(X_test)[clf(X_test) == 1][:100]
+corpus_vectors = vectorizer.transform(corpus)
 corpus_x = torch.tensor(scipy.sparse.csr_matrix.todense(corpus_vectors)).float()
 
 corpus_x.requires_grad = True
