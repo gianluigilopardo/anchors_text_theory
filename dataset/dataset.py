@@ -1,5 +1,11 @@
 # dataset manager
+import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.feature_extraction.text import TfidfVectorizer
+
+import torch
+import scipy
 
 import re
 
@@ -34,3 +40,31 @@ class Dataset:
 
     def preprocess(self, x):
         return re.sub('[^a-zA-Z\d\s]', '', x).lower()
+
+
+class Documents:
+    def __init__(self, dataset, datapath, vectorization):
+        data = Dataset(dataset, datapath)
+        X, y = data.X, data.y
+
+        X_train, X_test, y_train, y_test = train_test_split(X, y)
+
+        self.docs = X_test
+
+        # Vectorization
+        if vectorization == 'tf_idf':
+            self.vectorizer = TfidfVectorizer(norm=None, max_features=1000)
+        elif vectorization == 'norm_tf_idf':
+            self.vectorizer = TfidfVectorizer(max_features=1000)
+        self.train_vectors = self.vectorizer.fit_transform(X_train)
+        self.test_vectors = self.vectorizer.transform(X_test)
+
+        # convert to pytorch tensors
+        self.train_tensors = torch.tensor(scipy.sparse.csr_matrix.todense(self.train_vectors)).float()
+        self.test_tensors = torch.tensor(scipy.sparse.csr_matrix.todense(self.test_vectors)).float()
+
+    def get_docs(self):
+        docs_vectors = self.vectorizer.transform(self.docs)
+        docs_x = torch.tensor(scipy.sparse.csr_matrix.todense(docs_vectors)).float()
+        docs_x.requires_grad = True
+        return self.docs, docs_x
