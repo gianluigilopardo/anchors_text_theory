@@ -18,5 +18,6 @@ Some non-standard packages need to be installed:
 - ```exhaustive_anchors``` contains 
     -- ```empirical_anchor_text.py```: our exhaustive-empirical implementation of Anchors for text data
     -- ```similarity.py```: script to compute the Jaccard similarity between exhaustive-empirical Anchors and official implementation
-- in ```monte-carlo```, the script ```linear_binomial_distribution.py``` validates *Approximating the precision of a linear classifier*
+- in ```monte-carlo```, the script ```precision_approximation.py``` validates *Approximating the precision of a linear classifier*, ```norm_tf_idf.py``` validates the statement for the normalized TF-IDF vectorization.  
+- ```analysis``` contains experiments for linear models (```linear_model```),  if-then rules (```simple_rules```), and neural networks (```nn_gradient```).  Their results are available in ```results```.
 - run ```generate_figures.py``` to visualize some experiments of *Analysis on explainable classifiers*: figures will be saved in ```results```.
